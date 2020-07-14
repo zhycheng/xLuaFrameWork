@@ -19,10 +19,11 @@ public class Launch : MonoBehaviour {
         // 执行代码块，输出 hello world
         string luaScript=string.Format("require '{0}'", mainLuaFile);
         luaenv.DoString(luaScript);
-        GameObject.DontDestroyOnLoad(this.gameObject);
-        luaUpdate=luaenv.Global.Get<Action>("Update");
+        //GameObject.DontDestroyOnLoad(this.gameObject);
+        luaUpdate =luaenv.Global.Get<Action>("Update");
         luaFixedUpdate=luaenv.Global.Get<Action>("FixedUpdate");
         luaLateUpdate= luaenv.Global.Get<Action>("LateUpdate");
+
     }
 
     private void FixedUpdate()
