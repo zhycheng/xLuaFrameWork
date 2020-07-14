@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System;
 using UnityEngine;
 using XLua;
 
 public class Launch : MonoBehaviour {
-    static string mainLuaFile = "Lua/main";
+    static string luaFolder = "Lua";
+    static string mainLuaFile = "Main";
     LuaEnv luaenv = null;
     Action luaUpdate = null;
     Action luaFixedUpdate = null;
@@ -13,7 +15,7 @@ public class Launch : MonoBehaviour {
     // Use this for initialization
     void Start () {
         luaenv = new LuaEnv();
-        //luaenv.AddLoader(MyLoader);
+        luaenv.AddLoader(MyLoader);
         // 执行代码块，输出 hello world
         string luaScript=string.Format("require '{0}'", mainLuaFile);
         luaenv.DoString(luaScript);
@@ -58,12 +60,13 @@ public class Launch : MonoBehaviour {
     }
 
 
-    public  byte[] MyLoader(ref string filepath)
+    public  byte[] MyLoader(ref string filePath)
     {
-        Debug.Log(filepath);
-        string script = "print('hello zyc')";
-        // 将字符串转换成byte[]
-        return System.Text.Encoding.UTF8.GetBytes(script);
+        filePath = filePath.Replace(".", "/") + ".lua";
+        string scriptPath = "";
+        scriptPath = Path.Combine(Application.dataPath, luaFolder);
+        scriptPath = Path.Combine(scriptPath, filePath);
+        return GameUtility.SafeReadAllBytes(scriptPath);
     }
 
    
