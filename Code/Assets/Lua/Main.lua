@@ -1,6 +1,8 @@
 UIPage={}
+glb={}
 require "UIFrameWork.UIManager"
 require "UI.LoginPage"
+require "Utility.Tool"
 
 print("here in main.lua")
 

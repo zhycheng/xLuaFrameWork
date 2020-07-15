@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System;
 using UnityEngine;
 using XLua;
+using UnityEngine.UI;
 
 public class Launch : MonoBehaviour {
     static string luaFolder = "Lua";
@@ -63,6 +62,11 @@ public class Launch : MonoBehaviour {
 
     public  byte[] MyLoader(ref string filePath)
     {
+        /*
+#if UNITY_EDITOR
+        Debug.Log(" --- Unity Editor");
+#endif
+*/
         filePath = filePath.Replace(".", "/") + ".lua";
         string scriptPath = "";
         scriptPath = Path.Combine(Application.dataPath, luaFolder);
