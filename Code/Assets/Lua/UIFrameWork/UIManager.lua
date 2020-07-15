@@ -99,7 +99,6 @@ function class:PopPage(name)
 end
 
 function class:Update()
-    print("uimanager lua OnUpdate")
     for k,v in pairs(self.runningPage) do
         if v.OnUpdate~=nil then
             v:OnUpdate()
@@ -108,7 +107,6 @@ function class:Update()
 end
 
 function class:LateUpdate()
-    print("uimanager lua OnLateUpdate")
     for k,v in pairs(self.runningPage) do
         if v.OnLateUpdate~=nil then
             v:OnLateUpdate()
@@ -117,7 +115,6 @@ function class:LateUpdate()
 end
 
 function class:FixedUpdate()
-    print("uimanager lua OnFixedUpdate")
     for k,v in pairs(self.runningPage) do
         if v.OnFixedUpdate~=nil then
             v:OnFixedUpdate()

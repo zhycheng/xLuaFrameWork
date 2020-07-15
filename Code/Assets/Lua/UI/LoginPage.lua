@@ -14,9 +14,28 @@ function class:OnCreate(data)
     local input=self.ui.name_input.transform:GetComponent(typeof(CS.UnityEngine.UI.InputField))
     self.input=input
     self.btn.onClick:AddListener(self:OnLoginClicked())
+
     self.btn_about=self.ui.btn_about.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_about.onClick:AddListener(self:OnAboutClicked())
 
+    self.btn_test=self.ui.btn_test.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
+    self.btn_test.onClick:AddListener(self:OnTestClicked())
+
+end
+
+function class:OnTestClicked()
+    local function handler()
+        local a={}
+        a.a=1
+        a.b={}
+        a.b.b=2
+        a.b.c={}
+        a.b.c.c=3
+        a.b.c.d={}
+        a.b.c.d.d=4
+        print(glb.dump(a,false,8))
+    end
+    return handler
 end
 
 function class:OnAboutClicked()
@@ -28,18 +47,24 @@ end
 
 function class:OnLoginClicked()
     local function handler()
-        glb.log(self.input.text)
+        glb.dump(self.input.text)
     end
     return handler
 end
 
 function class:OnUpdate()
-    print("LoginPage OnUpdate")
+    
 end
 
 function class:OnDestroy()
     if self.btn~=nil then
         self.btn.onClick:RemoveAllListeners()
+    end
+    if self.btn_about~=nil then
+        self.btn_about.onClick:RemoveAllListeners()
+    end
+    if self.btn_test~=nil then
+        self.btn_test.onClick:RemoveAllListeners()
     end
 end
 
