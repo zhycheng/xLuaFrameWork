@@ -1,23 +1,25 @@
 UIPage={}
 glb={}
+require "Utility.Tool"
 require "UIFrameWork.UIManager"
 require "UI.LoginPage"
-require "Utility.Tool"
+require "UI.AboutPage"
 
 print("here in main.lua")
 
 
 
 function Update()
-    --print("lua Update")
+    
+    UIManager:Update()
 end
 
 function LateUpdate()
-    --print("lua LateUpdate")
+    UIManager:LateUpdate()
 end
 
 function FixedUpdate()
-    --print("lua FixedUpdate")
+    UIManager:FixedUpdate()
 end
 
 UIManager:Init()

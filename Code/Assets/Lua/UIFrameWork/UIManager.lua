@@ -5,6 +5,7 @@ class.name="UIManager"
 class.pageInfo={}
 class.runningPage={}
 
+
 function class:RegisterPage(tab)
     self.pageInfo[tab.pageName]=tab
 end
@@ -47,6 +48,7 @@ function class:PushPage(pageName,data)
     end
     local tab={}
     setmetatable(tab,originalTab)
+    tab.ui={}
     local path=tab:GetPrefab()
     print("path is:"..path)
     local go=CS.UnityEngine.Resources.Load(path)
@@ -54,6 +56,7 @@ function class:PushPage(pageName,data)
     local trans = pageObject.transform
     trans:SetParent(self.transfrom)
     trans.localPosition = CS.UnityEngine.Vector3(0,0,0)
+    trans.localScale = CS.UnityEngine.Vector3(1,1,1)
     local nameKey=GetChildName(trans)
     for k, v in pairs(nameKey) do
         tab.ui[k]=v
@@ -82,6 +85,42 @@ function class:PopPage(name)
     if pageTable==nil then
         return
     end
+    pageTable:OnDestroy()
     CS.UnityEngine.GameObject.Destroy(pageTable.gameObject)
-    table.remove(self.runningPage,pageTable)
+
+    for k,v in pairs(self.runningPage) do
+        if v==pageTable then
+            table.remove(self.runningPage,k)
+            break
+        end
+    end
+
+    
+end
+
+function class:Update()
+    print("uimanager lua OnUpdate")
+    for k,v in pairs(self.runningPage) do
+        if v.OnUpdate~=nil then
+            v:OnUpdate()
+        end
+    end
+end
+
+function class:LateUpdate()
+    print("uimanager lua OnLateUpdate")
+    for k,v in pairs(self.runningPage) do
+        if v.OnLateUpdate~=nil then
+            v:OnLateUpdate()
+        end
+    end
+end
+
+function class:FixedUpdate()
+    print("uimanager lua OnFixedUpdate")
+    for k,v in pairs(self.runningPage) do
+        if v.OnFixedUpdate~=nil then
+            v:OnFixedUpdate()
+        end
+    end
 end
