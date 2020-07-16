@@ -25,6 +25,18 @@ function class:OnCreate(data)
     self.btn_test=self.ui.btn_test.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_test.onClick:AddListener(self:OnTestClicked())
 
+    EventManager:AddListener("about",self:AboutEvent())
+
+end
+
+function class:AboutEvent()
+    local function handler(...)
+        glb.log(glb.dump(self))
+        for k,v in pairs({...}) do
+            glb.log(v)
+        end
+    end
+    return handler
 end
 
 function class:OnTestClicked()
@@ -37,13 +49,13 @@ function class:OnTestClicked()
         a.b.c.c=3
         a.b.c.d={}
         a.b.c.d.d=4
-        print(glb.dump(a,false,8))
+        glb.log(glb.dump(a,false,8))
     end
     return handler
 end
 
 function class:OnUIMsg(msgType,name)
-    print("LoginPage receive msg:type "..msgType.." "..name)
+    glb.log("LoginPage receive msg:type "..msgType.." "..name)
 end
 
 function class:OnAboutClicked()

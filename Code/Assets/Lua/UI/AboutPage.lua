@@ -23,8 +23,7 @@ end
 
 function class:OnOKClicked()
     local function handler()
-        index=index+1
-        print("About index:"..index)
+        EventManager:Brocast("about",1,2,3,4)
     end
     return handler
 end
@@ -48,7 +47,7 @@ function class:OnUpdate()
 end
 
 function class:OnUIMsg(msgType,name)
-    print("AboutPage receive msg:type "..msgType.." "..name)
+    glb.log("AboutPage receive msg:type "..msgType.." "..name)
 end
 
 function class:OnDestroy()

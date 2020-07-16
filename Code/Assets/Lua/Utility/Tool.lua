@@ -42,14 +42,29 @@ function glb.dump(tb, dump_metatable, max_level)
 	return _dump(tb, level)
 end
 
-function glb.TableContain(bigTab,subTab)
-    if type(bigTab)~="table" or type(subTab)~="table" then
+function glb.TableContain(bigTab,value)
+    if type(bigTab)~="table" then
+        glb.warn("TableContain bigTab is not a table")
+        return false
+    end
+    if value==nil then
+        glb.warn("TableContain value is nil")
         return false
     end
     for k,v in pairs(bigTab) do
-        if v==subTab then
+        if v==value then
             return true
         end
     end
     return false
+end
+
+function glb.log(value)
+    CS.UnityEngine.Debug.Log(value)
+end
+function glb.error(value)
+    CS.UnityEngine.Debug.LogError(value)
+end
+function glb.warn(value)
+    CS.UnityEngine.Debug.LogWarning(value)
 end

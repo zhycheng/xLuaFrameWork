@@ -35,7 +35,7 @@ function class:OnOKClicked()
 end
 
 function class:OnUIMsg(msgType,name)
-    print("ActivityPage receive msg:type "..msgType.." "..name)
+    glb.log("ActivityPage receive msg:type "..msgType.." "..name)
 end
 
 function class:OnCloseClicked()

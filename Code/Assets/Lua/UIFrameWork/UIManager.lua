@@ -34,12 +34,15 @@ function class:RegisterUIMsg(name,msgType,tab)
         if glb.TableContain(UIManager.PopPageMsg[name],tab)==false then
             table.insert(UIManager.PopPageMsg[name],tab)
         end
+    else
+        glb.error("RegisterUIMsg msgType error type:"..type(msgType))
     end
 end
 
 function class:UnRegisterUIMsg(name,msgType,tab)
     if msgType==UIManager.MsgType.PushPage then
        if UIManager.PushPageMsg==nil or UIManager.PushPageMsg[name]==nil then
+            glb.warn("UnRegisterUIMsg not run")
             return
        end
        for k,v in pairs(UIManager.PushPageMsg[name]) do
@@ -50,6 +53,7 @@ function class:UnRegisterUIMsg(name,msgType,tab)
         
     elseif msgType==UIManager.MsgType.PopPage then
        if UIManager.PopPageMsg==nil or UIManager.PopPageMsg[name]==nil then
+            glb.warn("UnRegisterUIMsg not run")
             return
        end
        for k,v in pairs(UIManager.PopPageMsg[name]) do
@@ -86,7 +90,7 @@ end
 function class:PushPage(pageName,data)
     local originalTab=self.pageInfo[pageName]
     if originalTab==nil then
-        print("page "..pageName.." not register")
+        glb.error("page "..pageName.." not register")
         return
     end
     local tab={}
@@ -132,6 +136,7 @@ function class:PopPage(name)
         pageTable=self:GetPageByName(name)
     end
     if pageTable==nil then
+        glb.warn("pageTable not exist")
         return
     end
     local name=pageTable.pageName
