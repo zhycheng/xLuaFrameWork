@@ -41,3 +41,15 @@ function glb.dump(tb, dump_metatable, max_level)
 	
 	return _dump(tb, level)
 end
+
+function glb.TableContain(bigTab,subTab)
+    if type(bigTab)~="table" or type(subTab)~="table" then
+        return false
+    end
+    for k,v in pairs(bigTab) do
+        if v==subTab then
+            return true
+        end
+    end
+    return false
+end

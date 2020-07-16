@@ -1,9 +1,14 @@
-print("hello uimanager")
+
 UIManager={}
 local class=UIManager
 class.name="UIManager"
 class.pageInfo={}
 class.runningPage={}
+class.MsgType=
+{
+    PushPage=1,
+    PopPage=2,
+}
 
 
 function class:RegisterPage(tab)
@@ -14,6 +19,45 @@ function class:Init()
     self.gameObject=CS.UnityEngine.GameObject.Find("Canvas")
     self.transfrom=self.gameObject.transform
     CS.UnityEngine.Object.DontDestroyOnLoad(self.gameObject)
+end
+
+function class:RegisterUIMsg(name,msgType,tab)
+    if msgType==UIManager.MsgType.PushPage then
+        UIManager.PushPageMsg=UIManager.PushPageMsg or {}
+        UIManager.PushPageMsg[name]=UIManager.PushPageMsg[name] or {}
+        if glb.TableContain(UIManager.PushPageMsg[name],tab)==false then
+            table.insert(UIManager.PushPageMsg[name],tab)
+        end
+    elseif msgType==UIManager.MsgType.PopPage then
+        UIManager.PopPageMsg=UIManager.PopPageMsg or {}
+        UIManager.PopPageMsg[name]=UIManager.PopPageMsg[name] or {}
+        if glb.TableContain(UIManager.PopPageMsg[name],tab)==false then
+            table.insert(UIManager.PopPageMsg[name],tab)
+        end
+    end
+end
+
+function class:UnRegisterUIMsg(name,msgType,tab)
+    if msgType==UIManager.MsgType.PushPage then
+       if UIManager.PushPageMsg==nil or UIManager.PushPageMsg[name]==nil then
+            return
+       end
+       for k,v in pairs(UIManager.PushPageMsg[name]) do
+            if v==tab then
+                table.remove(UIManager.PushPageMsg[name], k)
+            end
+       end
+        
+    elseif msgType==UIManager.MsgType.PopPage then
+       if UIManager.PopPageMsg==nil or UIManager.PopPageMsg[name]==nil then
+            return
+       end
+       for k,v in pairs(UIManager.PopPageMsg[name]) do
+            if v==tab then
+                table.remove(UIManager.PopPageMsg[name], k)
+            end
+       end
+    end
 end
 
 local function GetChildName(transform)
@@ -40,7 +84,6 @@ local function GetChildName(transform)
 end
 
 function class:PushPage(pageName,data)
-    print(self.name)
     local originalTab=self.pageInfo[pageName]
     if originalTab==nil then
         print("page "..pageName.." not register")
@@ -50,7 +93,6 @@ function class:PushPage(pageName,data)
     setmetatable(tab,originalTab)
     tab.ui={}
     local path=tab:GetPrefab()
-    print("path is:"..path)
     local go=CS.UnityEngine.Resources.Load(path)
     local pageObject=CS.UnityEngine.GameObject.Instantiate(go)
     local trans = pageObject.transform
@@ -64,6 +106,13 @@ function class:PushPage(pageName,data)
     tab.gameObject=pageObject
     tab:OnCreate(data)
     table.insert(self.runningPage,tab)
+    if UIManager.PushPageMsg~=nil and UIManager.PushPageMsg[pageName]~=nil then
+        for k,v in pairs(UIManager.PushPageMsg[pageName]) do
+            if v.OnUIMsg~=nil then
+                v:OnUIMsg(UIManager.MsgType.PushPage,pageName)
+            end
+        end
+    end
 end
 
 function class:GetPageByName(name)
@@ -85,6 +134,7 @@ function class:PopPage(name)
     if pageTable==nil then
         return
     end
+    local name=pageTable.pageName
     pageTable:OnDestroy()
     CS.UnityEngine.GameObject.Destroy(pageTable.gameObject)
 
@@ -94,8 +144,14 @@ function class:PopPage(name)
             break
         end
     end
-
-    
+    --退出之后再发送这个消息
+    if UIManager.PopPageMsg~=nil and UIManager.PopPageMsg[name] then
+        for k,v in pairs(UIManager.PopPageMsg[name]) do
+            if v.OnUIMsg~=nil then
+                v:OnUIMsg(UIManager.MsgType.PopPage,name)
+            end
+        end
+    end
 end
 
 function class:Update()

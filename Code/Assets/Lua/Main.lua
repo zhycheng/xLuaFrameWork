@@ -6,7 +6,7 @@ require "UI.LoginPage"
 require "UI.AboutPage"
 require "UI.ActivityPage"
 
-print("here in main.lua")
+
 
 
 

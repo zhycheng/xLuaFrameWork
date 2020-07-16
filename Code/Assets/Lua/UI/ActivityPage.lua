@@ -16,12 +16,13 @@ function class:OnCreate(data)
     self.btn_close.onClick:AddListener(self:OnCloseClicked())
     self.btn_about=self.ui.btn_about.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_about.onClick:AddListener(self:OnAboutClicked())
+    UIManager:RegisterUIMsg("AboutPage",UIManager.MsgType.PushPage,self)
+    UIManager:RegisterUIMsg("AboutPage",UIManager.MsgType.PopPage,self)
 end
 
 function class:OnAboutClicked()
     local function handler()
         UIManager:PushPage("AboutPage")
-       print("about button clicked")
     end
     return handler
 end
@@ -31,6 +32,10 @@ function class:OnOKClicked()
        
     end
     return handler
+end
+
+function class:OnUIMsg(msgType,name)
+    print("ActivityPage receive msg:type "..msgType.." "..name)
 end
 
 function class:OnCloseClicked()
@@ -54,6 +59,8 @@ function class:OnDestroy()
     if self.btn_about~=nil then
         self.btn_about.onClick:RemoveAllListeners()
     end
+    UIManager:UnRegisterUIMsg("AboutPage",UIManager.MsgType.PushPage,self)
+    UIManager:UnRegisterUIMsg("AboutPage",UIManager.MsgType.PopPage,self)
 end
 
 

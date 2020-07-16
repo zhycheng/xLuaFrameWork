@@ -1,4 +1,3 @@
-print("hello loginPage")
 UIPage.LoginPage={}
 local class=UIPage.LoginPage
 class.__index=class
@@ -10,6 +9,11 @@ function class:GetPrefab()
 end
 
 function class:OnCreate(data)
+    UIManager:RegisterUIMsg("AboutPage",UIManager.MsgType.PushPage,self)
+    UIManager:RegisterUIMsg("AboutPage",UIManager.MsgType.PopPage,self)
+    UIManager:RegisterUIMsg("ActivityPage",UIManager.MsgType.PushPage,self)
+    UIManager:RegisterUIMsg("ActivityPage",UIManager.MsgType.PopPage,self)
+
     self.btn=self.ui.btn_enter.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     local input=self.ui.name_input.transform:GetComponent(typeof(CS.UnityEngine.UI.InputField))
     self.input=input
@@ -36,6 +40,10 @@ function class:OnTestClicked()
         print(glb.dump(a,false,8))
     end
     return handler
+end
+
+function class:OnUIMsg(msgType,name)
+    print("LoginPage receive msg:type "..msgType.." "..name)
 end
 
 function class:OnAboutClicked()
@@ -66,6 +74,10 @@ function class:OnDestroy()
     if self.btn_test~=nil then
         self.btn_test.onClick:RemoveAllListeners()
     end
+    UIManager:UnRegisterUIMsg("AboutPage",UIManager.MsgType.PushPage,self)
+    UIManager:UnRegisterUIMsg("AboutPage",UIManager.MsgType.PopPage,self)
+    UIManager:UnRegisterUIMsg("ActivityPage",UIManager.MsgType.PushPage,self)
+    UIManager:UnRegisterUIMsg("ActivityPage",UIManager.MsgType.PopPage,self)
 end
 
 
