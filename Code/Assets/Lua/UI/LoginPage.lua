@@ -41,6 +41,7 @@ end
 
 function class:OnTestClicked()
     local function handler()
+        --[[
         local a={}
         a.a=1
         a.b={}
@@ -50,6 +51,8 @@ function class:OnTestClicked()
         a.b.c.d={}
         a.b.c.d.d=4
         glb.log(glb.dump(a,false,8))
+        --]]
+        UIManager:PushPage("BagPage")
     end
     return handler
 end

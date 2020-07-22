@@ -6,6 +6,7 @@ require "Utility.EventManager"
 require "UIFrameWork.UIManager"
 require "UI.LoginPage"
 require "UI.AboutPage"
+require "UI.BagPage"
 require "UI.ActivityPage"
 
 
