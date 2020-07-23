@@ -16,8 +16,17 @@ function class:OnCreate(data)
     self.btn_close.onClick:AddListener(self:OnCloseClicked())
     self.btn_activity=self.ui.btn_activity.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_activity.onClick:AddListener(self:OnActivityClicked())
-   
-    
+    self.scrollrect=self.ui.scrollGood.transform:GetComponent(typeof(CS.UnityEngine.UI.ScrollRect))
+    self.scrollrect.onValueChanged:AddListener(self:ScrollRectMove())
+end
+
+
+function class:ScrollRectMove()
+    local function handler(vec)
+        print(vec.x,vec.y)
+        --这里的vec没有意义，暂时用不到，不过只要滑动的话，那么这个函数就会被调用
+    end
+    return handler
 end
 
 function class:OnOKClicked()
@@ -59,7 +68,9 @@ function class:OnDestroy()
     if self.btn_activity~=nil then
         self.btn_activity.onClick:RemoveAllListeners()
     end
-   
+    if self.scrollrect~=nil then
+        self.scrollrect.onValueChanged:RemoveAllListeners()
+    end
 end
 
 
