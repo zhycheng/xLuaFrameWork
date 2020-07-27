@@ -23,9 +23,17 @@ end
 
 function class:OnOKClicked()
     local function handler()
-        EventManager:Brocast("about",1,2,3,4)
+        --EventManager:Brocast("about",1,2,3,4)
+        self:ShowTest()
+        
     end
     return handler
+end
+
+
+function class:ShowTest()
+
+
 end
 
 function class:OnActivityClicked()

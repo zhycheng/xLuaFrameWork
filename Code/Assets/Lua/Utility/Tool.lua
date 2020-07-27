@@ -60,11 +60,50 @@ function glb.TableContain(bigTab,value)
 end
 
 function glb.log(value)
-    CS.UnityEngine.Debug.Log(value)
+    CS.UnityEngine.Debug.Log(value.."\n "..debug.traceback())
 end
-function glb.error(value)
-    CS.UnityEngine.Debug.LogError(value)
+function glb.error(value,traceback)
+    CS.UnityEngine.Debug.LogError(value.."\n "..debug.traceback())
 end
 function glb.warn(value)
-    CS.UnityEngine.Debug.LogWarning(value)
+    CS.UnityEngine.Debug.LogWarning(value.."\n "..debug.traceback())
+end
+
+function glb.CreateLoopScrollView(scrollRect,initCount,itemList)
+	local tab={}
+	tab.scrollrect=scrollRect
+	tab.contentTransform=scrollRect.content
+	tab.initCount=initCount
+	tab.objList={}
+	local gridLayout=tab.contentTransform:GetComponent(typeof(CS.UnityEngine.UI.GridLayoutGroup))
+	tab.cellSize=gridLayout.cellSize
+	tab.itemList=itemList
+	for i=1,initCount do
+		tab.itemList[i].obj.transform.parent=tab.contentTransform
+		tab.itemList[i].obj.transform.localScale = CS.UnityEngine.Vector3(1,1,1)
+	end
+	tab.contentTransform.sizeDelta=CS.UnityEngine.Vector2(tab.cellSize.x,tab.cellSize.y*initCount)
+	
+	function tab:ScrollRectMove()
+		local function handler(vec)
+			
+		end
+		return handler
+	end
+	tab.scrollrect.onValueChanged:AddListener(tab:ScrollRectMove())
+	function tab:Init(listData)
+		local dataLen=#listData
+		for i=self.initCount,1,-1 do
+			if listData[i]==nil then
+				CS.UnityEngine.GameObject.Destroy(self.itemList[i].obj)
+				table.remove(self.itemList,i)
+			else
+				self.itemList[i].index=i
+				self.itemList[i]:Show(listData[i])
+			end
+		end
+		self.contentTransform.sizeDelta=CS.UnityEngine.Vector2(self.cellSize.x,self.cellSize.y*dataLen)
+	end
+
+	return tab
 end
