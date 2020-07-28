@@ -19,14 +19,15 @@ function class:OnCreate(data)
     self.scrollrect=self.ui.scrollGood.transform:GetComponent(typeof(CS.UnityEngine.UI.ScrollRect))
     
     local a={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55}
+    local b={1}
     local itemList={}
     local initCount=7
     for i=1,7 do
         itemList[i]=self:NewItem(self.ui.gooditem)
     end
 
-    local tabView=glb.CreateLoopScrollView(self.scrollrect,initCount,itemList,10)
-    tabView:Init(a)
+    self.tabView=glb.CreateLoopScrollView(self.scrollrect,initCount,itemList,10)
+    self.tabView:Refresh(b)
 end
 
 function class:NewItem(go)
@@ -34,8 +35,12 @@ function class:NewItem(go)
     tab.index=-1
     tab.obj=CS.UnityEngine.GameObject.Instantiate(go)
     function tab:Show(data)
+        self.obj:SetActive(true)
         local txt=self.obj.transform:Find("Text"):GetComponent(typeof(CS.UnityEngine.UI.Text))
         txt.text=tostring(data)
+    end
+    function tab:Hide()
+        self.obj:SetActive(false)
     end
     return tab
 end
@@ -51,14 +56,16 @@ end
 
 function class:OnOKClicked()
     local function handler()
-        
+        local c={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}
+        self.tabView:Refresh(c)
     end
     return handler
 end
 
 function class:OnActivityClicked()
     local function handler()
-      
+        local c={9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}
+        self.tabView:Refresh(c)
     end
     return handler
 end
