@@ -35,13 +35,26 @@ function class:NewItem(go)
     tab.index=-1
     tab.obj=CS.UnityEngine.GameObject.Instantiate(go)
     function tab:Show(data)
+        self.data=data
         self.obj:SetActive(true)
         local txt=self.obj.transform:Find("Text"):GetComponent(typeof(CS.UnityEngine.UI.Text))
         txt.text=tostring(data)
     end
+    function tab:onButtonClicked()
+        local function handler()
+            glb.log(self.data)
+        end
+        return handler
+    end
     function tab:Hide()
         self.obj:SetActive(false)
     end
+    function tab:Init()
+        local btn_item=self.obj.transform:Find("btn_item"):GetComponent(typeof(CS.UnityEngine.UI.Button))
+        btn_item.onClick:AddListener(self:onButtonClicked())
+    end
+    tab:Init()
+
     return tab
 end
 
