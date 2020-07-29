@@ -100,7 +100,6 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 				return v
 			end
 		end
-		log.error("can not get the index cell")
 		return nil
 	end
 	function tab:ScrollRectMove()
@@ -118,7 +117,7 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 					self.last=self.first
 					self.last.index=lastIndex+1
 					self.first=self:GetCellByIndex(firstIndex+1)
-					self.last:Show(self.listData[self.last.index])
+					self.last:Show(self.listData[self.last.index],self)
 				end
 			else
 				local pos=self.contentTransform:TransformPoint(self.last.obj.transform.localPosition).y
@@ -129,7 +128,7 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 					self.first=self.last
 					self.first.index=firstIndex-1
 					self.last=self:GetCellByIndex(lastIndex-1)
-					self.first:Show(self.listData[self.first.index])
+					self.first:Show(self.listData[self.first.index],self)
 				end
 			end
 			self.oldY=nowY
@@ -147,7 +146,7 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 				--CS.UnityEngine.GameObject.Destroy(self.itemList[i].obj)
 				self.itemList[i]:Hide()
 			else
-				self.itemList[i]:Show(listData[i])
+				self.itemList[i]:Show(listData[i],self)
 			end
 			tab.itemList[i].obj.transform.anchoredPosition=CS.UnityEngine.Vector2(tab.itemSize.x/2,-(i-1)*(tab.itemSize.y+tab.gapY))
 		end
@@ -156,5 +155,55 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 		self.contentTransform.anchoredPosition=CS.UnityEngine.Vector2(0,0)
 		self.contentTransform.sizeDelta=CS.UnityEngine.Vector2(self.itemSize.x,self.itemSize.y*dataLen+(dataLen-1)*self.gapY)
 	end
+
+	function tab:RemoveCell(index)
+	
+		
+		if index>#self.listData or index<0 then
+			return
+		end
+		--如果此Cell不是正在显示，则
+		local cell=self:GetCellByIndex(index)
+		if cell==nil then
+			return
+		end
+		table.remove(self.listData,index)
+		local dataLen=#self.listData
+		self.totalCount=dataLen
+		for k,v in pairs(self.itemList) do
+			if v.index>=index then
+				--对于每一个比删除cell要大的index，都需要重新设置它的内容
+				if self.listData[v.index]~=nil then
+					v:Show(self.listData[v.index],self)
+				else
+					v:Hide()
+				end
+			end
+		end
+		--处理完数据，再处理位置
+		local sizeY=self.itemSize.y*dataLen+(dataLen-1)*self.gapY
+		if sizeY<0 then
+			sizeY=0
+		end
+		self.contentTransform.sizeDelta=CS.UnityEngine.Vector2(self.itemSize.x,sizeY)
+		--content y的位置减去长度，应该到达
+		local contentY=self.contentTransform.anchoredPosition.y
+		local contentDown=-sizeY
+		glb.log("sizeY:"..sizeY)
+		local viewPortPos=self.viewPort.parent:TransformPoint(self.viewPort.localPosition)
+		local top=viewPortPos.y+self.viewPort.sizeDelta.y/2
+		local down=top-self.viewPort.sizeDelta.y
+		local pos=self.contentTransform:TransformPoint(CS.UnityEngine.Vector3(0,contentDown,0)).y
+		glb.log("changed pos:"..pos)
+		glb.log("top:"..top)
+		glb.log("down:"..down)
+		if sizeY<=self.viewPort.sizeDelta.y then
+		else
+			if pos>down then
+				self.contentTransform.anchoredPosition=CS.UnityEngine.Vector2(0,self.contentTransform.anchoredPosition.y-(pos-down))
+			end
+		end
+	end
+
 	return tab
 end
