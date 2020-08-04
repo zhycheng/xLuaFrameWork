@@ -1,12 +1,12 @@
-UIPage.BagPage={}
-local class=UIPage.BagPage
+UIPage.HeroPage={}
+local class=UIPage.HeroPage
 class.__index=class
-class.pageName="BagPage"
+class.pageName="HeroPage"
 UIManager:RegisterPage(class)
 
 
 function class:GetPrefab()
-    return "Prefab/BagPage"
+    return "Prefab/HeroPage"
 end
 
 function class:OnCreate(data)
@@ -16,17 +16,17 @@ function class:OnCreate(data)
     self.btn_close.onClick:AddListener(self:OnCloseClicked())
     self.btn_activity=self.ui.btn_activity.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_activity.onClick:AddListener(self:OnActivityClicked())
-    self.scrollrect=self.ui.scrollGood.transform:GetComponent(typeof(CS.UnityEngine.UI.ScrollRect))
+    self.scrollrect=self.ui.scrollHero.transform:GetComponent(typeof(CS.UnityEngine.UI.ScrollRect))
     
     local a={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55}
     local b={1}
     local itemList={}
     local initCount=7
     for i=1,7 do
-        itemList[i]=self:NewItem(self.ui.gooditem)
+        itemList[i]=self:NewItem(self.ui.heroitem)
     end
 
-    self.tabView=glb.CreateVerticalLoopScrollView(self.scrollrect,initCount,itemList,10)
+    self.tabView=glb.CreateHorizontalLoopScrollView(self.scrollrect,initCount,itemList,10)
     self.tabView:Refresh(a)
 end
 
@@ -44,7 +44,7 @@ function class:NewItem(go)
     function tab:onButtonClicked()
         local function handler()
             glb.log(self.data)
-            self.scrllviewTab:RemoveCell(self.index)
+            --self.scrllviewTab:RemoveCell(self.index)
         end
         return handler
     end
@@ -59,28 +59,18 @@ function class:NewItem(go)
     return tab
 end
 
-
-function class:ScrollRectMove()
-    local function handler(vec)
-        print(vec.x,vec.y)
-        --这里的vec没有意义，暂时用不到，不过只要滑动的话，那么这个函数就会被调用
-    end
-    return handler
-end
-
 function class:OnOKClicked()
     local function handler()
         
-        --self.tabView:RemoveCell(20)
-        self.tabView:RemoveCell(33)
+       
     end
     return handler
 end
 
 function class:OnActivityClicked()
     local function handler()
-        local c={9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}
-        self.tabView:Refresh(c)
+        --local c={9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}
+        --self.tabView:Refresh(c)
     end
     return handler
 end

@@ -69,29 +69,26 @@ function glb.warn(value)
     CS.UnityEngine.Debug.LogWarning(value.."\n "..debug.traceback())
 end
 
-function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
+function glb.CreateVerticalLoopScrollView(scrollRect,initCount,itemList,gapY)
 	local tab={}
 	tab.gapY=gapY or 0
 	tab.scrollrect=scrollRect
 	tab.contentTransform=scrollRect.content
 	tab.viewPort=scrollRect.viewport
 	tab.initCount=initCount
-	tab.objList={}
-	--local gridLayout=tab.contentTransform:GetComponent(typeof(CS.UnityEngine.UI.GridLayoutGroup))
 	tab.itemList=itemList
 	for i=1,initCount do
 		local trans=tab.itemList[i].obj.transform
 		tab.itemList[i].index=i
-		trans.parent=tab.contentTransform
+		trans:SetParent(tab.contentTransform,false)
 		if i == 1 then
 			tab.itemSize=trans.sizeDelta
 		end
-		trans.localScale = CS.UnityEngine.Vector3(1,1,1)
 		trans.anchoredPosition=CS.UnityEngine.Vector2(tab.itemSize.x/2,-(i-1)*(tab.itemSize.y+tab.gapY))
 	end
 	tab.first=tab.itemList[1]
 	tab.last=tab.itemList[initCount]
-	tab.contentTransform.sizeDelta=CS.UnityEngine.Vector2(tab.itemSize.x,tab.itemSize.y*initCount)
+	tab.contentTransform.sizeDelta=CS.UnityEngine.Vector2(tab.itemSize.x,tab.itemSize.y*tab.initCount+tab.gapY*(tab.initCount-1))
 	tab.oldY=tab.contentTransform.anchoredPosition.y
 	function tab:GetCellByIndex(index)
 		glb.log("input index:"..index)
@@ -113,7 +110,7 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 				if pos-(self.itemSize.y+self.gapY)>top and self.last.index<self.totalCount then
 					local firstIndex=self.first.index
 					local lastIndex=self.last.index
-					self.first.obj.transform.anchoredPosition=CS.UnityEngine.Vector2(tab.itemSize.x/2,-(lastIndex)*(self.itemSize.y+self.gapY))
+					self.first.obj.transform.anchoredPosition=CS.UnityEngine.Vector2(self.itemSize.x/2,-(lastIndex)*(self.itemSize.y+self.gapY))
 					self.last=self.first
 					self.last.index=lastIndex+1
 					self.first=self:GetCellByIndex(firstIndex+1)
@@ -124,7 +121,7 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 				if pos+self.gapY<down and self.first.index>1 then
 					local lastIndex=self.last.index
 					local firstIndex=self.first.index
-					self.last.obj.transform.anchoredPosition=CS.UnityEngine.Vector2(tab.itemSize.x/2,-(firstIndex-2)*(self.itemSize.y+self.gapY))
+					self.last.obj.transform.anchoredPosition=CS.UnityEngine.Vector2(self.itemSize.x/2,-(firstIndex-2)*(self.itemSize.y+self.gapY))
 					self.first=self.last
 					self.first.index=firstIndex-1
 					self.last=self:GetCellByIndex(lastIndex-1)
@@ -148,7 +145,7 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 			else
 				self.itemList[i]:Show(listData[i],self)
 			end
-			tab.itemList[i].obj.transform.anchoredPosition=CS.UnityEngine.Vector2(tab.itemSize.x/2,-(i-1)*(tab.itemSize.y+tab.gapY))
+			self.itemList[i].obj.transform.anchoredPosition=CS.UnityEngine.Vector2(self.itemSize.x/2,-(i-1)*(self.itemSize.y+self.gapY))
 		end
 		self.first=self.itemList[1]
 		self.last=self.itemList[self.initCount]
@@ -157,8 +154,6 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 	end
 
 	function tab:RemoveCell(index)
-	
-		
 		if index>#self.listData or index<0 then
 			return
 		end
@@ -204,6 +199,97 @@ function glb.CreateLoopScrollView(scrollRect,initCount,itemList,gapY)
 			end
 		end
 	end
+	return tab
+end
 
+function glb.CreateHorizontalLoopScrollView(scrollRect,initCount,itemList,gapX)
+	local tab={}
+	tab.gapX=gapX or 0
+	tab.scrollrect=scrollRect
+	tab.contentTransform=scrollRect.content
+	tab.viewPort=scrollRect.viewport
+	tab.initCount=initCount
+	tab.itemList=itemList
+	for i=1,initCount do
+		local trans=tab.itemList[i].obj.transform
+		tab.itemList[i].index=i
+		trans:SetParent(tab.contentTransform,false)
+		if i == 1 then
+			tab.itemSize=trans.sizeDelta
+		end
+		trans.anchoredPosition=CS.UnityEngine.Vector2((i-1)*(tab.itemSize.x+tab.gapX),0)
+	end
+	tab.first=tab.itemList[1]
+	tab.last=tab.itemList[initCount]
+	tab.contentTransform.sizeDelta=CS.UnityEngine.Vector2(tab.itemSize.x*initCount+tab.gapX*(initCount-1),tab.itemSize.y)
+	tab.oldX=tab.contentTransform.anchoredPosition.x
+	function tab:GetCellByIndex(index)
+		glb.log("input index:"..index)
+		for k,v in pairs(self.itemList) do
+			if v.index==index then
+				return v
+			end
+		end
+		return nil
+	end
+	function tab:ScrollRectMove()
+		local function handler(vec)
+			local nowX=self.contentTransform.anchoredPosition.x
+			local viewPortPos=self.viewPort.parent:TransformPoint(self.viewPort.localPosition)
+			local left=viewPortPos.x-self.viewPort.sizeDelta.x/2
+			local right=left+self.viewPort.sizeDelta.x
+			glb.log("left:"..left..",right:"..right)
+			if nowX<self.oldX then
+				glb.log("left ")
+				local pos=self.contentTransform:TransformPoint(self.first.obj.transform.localPosition).x
+				glb.log("pos:"..pos)
+				if pos+(self.itemSize.x+self.gapX)<left and self.last.index<self.totalCount then
+					glb.log("left change")
+					local firstIndex=self.first.index
+					local lastIndex=self.last.index
+					self.first.obj.transform.anchoredPosition=CS.UnityEngine.Vector2((lastIndex)*(self.itemSize.x+self.gapX),0)
+					self.last=self.first
+					self.last.index=lastIndex+1
+					self.first=self:GetCellByIndex(firstIndex+1)
+					self.last:Show(self.listData[self.last.index],self)
+				end
+			else
+				glb.log("right ")
+				local pos=self.contentTransform:TransformPoint(self.last.obj.transform.localPosition).x
+				if pos-self.gapX>right and self.first.index>1 then
+					glb.log("right change")
+					local lastIndex=self.last.index
+					local firstIndex=self.first.index
+					self.last.obj.transform.anchoredPosition=CS.UnityEngine.Vector2((firstIndex-2)*(self.itemSize.x+self.gapX),0)
+					self.first=self.last
+					self.first.index=firstIndex-1
+					self.last=self:GetCellByIndex(lastIndex-1)
+					self.first:Show(self.listData[self.first.index],self)
+				end
+			end
+			self.oldX=nowX
+		end
+		return handler
+	end
+	tab.scrollrect.onValueChanged:AddListener(tab:ScrollRectMove())
+	function tab:Refresh(listData)
+		local dataLen=#listData
+		self.totalCount=dataLen
+		self.listData=listData
+		for i=self.initCount,1,-1 do
+			self.itemList[i].index=i
+			if listData[i]==nil then
+				--CS.UnityEngine.GameObject.Destroy(self.itemList[i].obj)
+				self.itemList[i]:Hide()
+			else
+				self.itemList[i]:Show(listData[i],self)
+			end
+			tab.itemList[i].obj.transform.anchoredPosition=CS.UnityEngine.Vector2((i-1)*(self.itemSize.x+self.gapX),0)
+		end
+		self.first=self.itemList[1]
+		self.last=self.itemList[self.initCount]
+		self.contentTransform.anchoredPosition=CS.UnityEngine.Vector2(0,0)
+		self.contentTransform.sizeDelta=CS.UnityEngine.Vector2(self.itemSize.x*dataLen+self.gapX*(dataLen-1),self.itemSize.y)
+	end
 	return tab
 end

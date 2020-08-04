@@ -57,7 +57,7 @@ end
 
 function class:OnTestHorizontal()
     local function handler()
-
+        UIManager:PushPage("HeroPage")
     end
     return handler
 end

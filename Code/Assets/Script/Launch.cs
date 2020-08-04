@@ -67,7 +67,6 @@ public class Launch : MonoBehaviour {
         Debug.Log(" --- Unity Editor");
 #endif
 */
-
         filePath = filePath.Replace(".", "/") + ".lua";
         string scriptPath = "";
         scriptPath = Path.Combine(Application.dataPath, luaFolder);
