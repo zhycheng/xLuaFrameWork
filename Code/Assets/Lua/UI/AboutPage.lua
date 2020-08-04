@@ -23,7 +23,6 @@ end
 
 function class:OnOKClicked()
     local function handler()
-        --EventManager:Brocast("about",1,2,3,4)
         self:ShowTest()
         
     end

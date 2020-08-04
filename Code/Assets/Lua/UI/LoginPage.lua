@@ -25,9 +25,18 @@ function class:OnCreate(data)
     self.btn_test=self.ui.btn_test.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_test.onClick:AddListener(self:OnTestClicked())
 
-    EventManager:AddListener("about",self:AboutEvent())
+    self.btn_horizontal=self.ui.btn_horizontal.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
+    self.btn_horizontal.onClick:AddListener(self:OnTestHorizontal())
+
+    self.btn_tes_event=self.ui.btn_tes_event.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
+    self.btn_tes_event.onClick:AddListener(self:OnTestEventSystem())
+    
+    self.listenerFunction=self:AboutEvent()
+    EventManager:AddListener("about",self.listenerFunction)
 
 end
+
+
 
 function class:AboutEvent()
     local function handler(...)
@@ -35,6 +44,20 @@ function class:AboutEvent()
         for k,v in pairs({...}) do
             glb.log(v)
         end
+    end
+    return handler
+end
+
+function class:OnTestEventSystem()
+    local function handler()
+        EventManager:Brocast("about",1,2,3,4)
+    end
+    return handler
+end
+
+function class:OnTestHorizontal()
+    local function handler()
+
     end
     return handler
 end
@@ -89,6 +112,15 @@ function class:OnDestroy()
     if self.btn_test~=nil then
         self.btn_test.onClick:RemoveAllListeners()
     end
+    if self.btn_horizontal~=nil then
+        self.btn_horizontal.onClick:RemoveAllListeners()
+    end
+
+    if self.btn_tes_event~=nil then
+        self.btn_tes_event.onClick:RemoveAllListeners()
+    end
+    EventManager:RemoveListener("about",self.listenerFunction)
+
     UIManager:UnRegisterUIMsg("AboutPage",UIManager.MsgType.PushPage,self)
     UIManager:UnRegisterUIMsg("AboutPage",UIManager.MsgType.PopPage,self)
     UIManager:UnRegisterUIMsg("ActivityPage",UIManager.MsgType.PushPage,self)
