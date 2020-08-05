@@ -91,7 +91,6 @@ function glb.CreateVerticalLoopScrollView(scrollRect,initCount,itemList,gapY)
 	tab.contentTransform.sizeDelta=CS.UnityEngine.Vector2(tab.itemSize.x,tab.itemSize.y*tab.initCount+tab.gapY*(tab.initCount-1))
 	tab.oldY=tab.contentTransform.anchoredPosition.y
 	function tab:GetCellByIndex(index)
-		glb.log("input index:"..index)
 		for k,v in pairs(self.itemList) do
 			if v.index==index then
 				return v
@@ -225,7 +224,7 @@ function glb.CreateHorizontalLoopScrollView(scrollRect,initCount,itemList,gapX)
 	tab.contentTransform.sizeDelta=CS.UnityEngine.Vector2(tab.itemSize.x*initCount+tab.gapX*(initCount-1),tab.itemSize.y)
 	tab.oldX=tab.contentTransform.anchoredPosition.x
 	function tab:GetCellByIndex(index)
-		glb.log("input index:"..index)
+		--glb.log("input index:"..index)
 		for k,v in pairs(self.itemList) do
 			if v.index==index then
 				return v
@@ -259,7 +258,7 @@ function glb.CreateHorizontalLoopScrollView(scrollRect,initCount,itemList,gapX)
 				--glb.log("right ")
 				local pos=self.contentTransform:TransformPoint(self.last.obj.transform.localPosition).x
 				if pos-self.gapX>right and self.first.index>1 then
-					glb.log("right change,pos:"..pos.."")
+					glb.log("right change,pos:"..pos..",right:"..right)
 					local lastIndex=self.last.index
 					local firstIndex=self.first.index
 					self.last.obj.transform.anchoredPosition=CS.UnityEngine.Vector2((firstIndex-2)*(self.itemSize.x+self.gapX),0)
@@ -330,15 +329,16 @@ function glb.CreateHorizontalLoopScrollView(scrollRect,initCount,itemList,gapX)
 		glb.log("sizeX:"..sizeX)
 		local viewPortPos=self.viewPort.parent:TransformPoint(self.viewPort.localPosition)
 		local left=viewPortPos.x-self.viewPort.sizeDelta.x/2
-		local right=left+self.viewPort.sizeDelta.y
+		local right=left+self.viewPort.sizeDelta.x
 		local pos=self.contentTransform:TransformPoint(CS.UnityEngine.Vector3(contentRight,0,0)).x
 		glb.log("changed pos:"..pos)
 		glb.log("left:"..left)
 		glb.log("right:"..right)
 		if sizeX<=self.viewPort.sizeDelta.x then
+
 		else
 			if pos<right then
-				glb.log("change contentTransform position")
+				glb.error("change contentTransform position***************")
 				self.contentTransform.anchoredPosition=CS.UnityEngine.Vector2(self.contentTransform.anchoredPosition.x-(pos-right),0)
 			end
 		end
