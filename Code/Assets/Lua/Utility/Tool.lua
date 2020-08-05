@@ -101,6 +101,7 @@ function glb.CreateVerticalLoopScrollView(scrollRect,initCount,itemList,gapY)
 	end
 	function tab:ScrollRectMove()
 		local function handler(vec)
+			glb.error("scrollrect moved")
 			local nowY=self.contentTransform.anchoredPosition.y
 			local viewPortPos=self.viewPort.parent:TransformPoint(self.viewPort.localPosition)
 			local top=viewPortPos.y+self.viewPort.sizeDelta.y/2
@@ -234,15 +235,16 @@ function glb.CreateHorizontalLoopScrollView(scrollRect,initCount,itemList,gapX)
 	end
 	function tab:ScrollRectMove()
 		local function handler(vec)
+			--glb.error("scrolled")
 			local nowX=self.contentTransform.anchoredPosition.x
 			local viewPortPos=self.viewPort.parent:TransformPoint(self.viewPort.localPosition)
 			local left=viewPortPos.x-self.viewPort.sizeDelta.x/2
 			local right=left+self.viewPort.sizeDelta.x
-			glb.log("left:"..left..",right:"..right)
+			--glb.log("left:"..left..",right:"..right)
 			if nowX<self.oldX then
-				glb.log("left ")
+				--glb.log("left ")
 				local pos=self.contentTransform:TransformPoint(self.first.obj.transform.localPosition).x
-				glb.log("pos:"..pos)
+				--glb.log("pos:"..pos)
 				if pos+(self.itemSize.x+self.gapX)<left and self.last.index<self.totalCount then
 					glb.log("left change")
 					local firstIndex=self.first.index
@@ -254,10 +256,10 @@ function glb.CreateHorizontalLoopScrollView(scrollRect,initCount,itemList,gapX)
 					self.last:Show(self.listData[self.last.index],self)
 				end
 			else
-				glb.log("right ")
+				--glb.log("right ")
 				local pos=self.contentTransform:TransformPoint(self.last.obj.transform.localPosition).x
 				if pos-self.gapX>right and self.first.index>1 then
-					glb.log("right change")
+					glb.log("right change,pos:"..pos.."")
 					local lastIndex=self.last.index
 					local firstIndex=self.first.index
 					self.last.obj.transform.anchoredPosition=CS.UnityEngine.Vector2((firstIndex-2)*(self.itemSize.x+self.gapX),0)
@@ -268,6 +270,7 @@ function glb.CreateHorizontalLoopScrollView(scrollRect,initCount,itemList,gapX)
 				end
 			end
 			self.oldX=nowX
+			
 		end
 		return handler
 	end
@@ -291,5 +294,55 @@ function glb.CreateHorizontalLoopScrollView(scrollRect,initCount,itemList,gapX)
 		self.contentTransform.anchoredPosition=CS.UnityEngine.Vector2(0,0)
 		self.contentTransform.sizeDelta=CS.UnityEngine.Vector2(self.itemSize.x*dataLen+self.gapX*(dataLen-1),self.itemSize.y)
 	end
+
+	function tab:RemoveCell(index)
+		glb.error("call remove index:"..index)
+		if index>#self.listData or index<0 then
+			return
+		end
+		--如果此Cell不是正在显示，则
+		local cell=self:GetCellByIndex(index)
+		if cell==nil then
+			return
+		end
+		table.remove(self.listData,index)
+		local dataLen=#self.listData
+		self.totalCount=dataLen
+		for k,v in pairs(self.itemList) do
+			if v.index>=index then
+				--对于每一个比删除cell要大的index，都需要重新设置它的内容
+				if self.listData[v.index]~=nil then
+					v:Show(self.listData[v.index],self)
+				else
+					v:Hide()
+				end
+			end
+		end
+		--处理完数据，再处理位置
+		local sizeX=self.itemSize.x*dataLen+(dataLen-1)*self.gapX
+		if sizeX<0 then
+			sizeX=0
+		end
+		self.contentTransform.sizeDelta=CS.UnityEngine.Vector2(sizeX,self.itemSize.y)
+		--content y的位置减去长度，应该到达
+		local contentX=self.contentTransform.anchoredPosition.x
+		local contentRight=sizeX
+		glb.log("sizeX:"..sizeX)
+		local viewPortPos=self.viewPort.parent:TransformPoint(self.viewPort.localPosition)
+		local left=viewPortPos.x-self.viewPort.sizeDelta.x/2
+		local right=left+self.viewPort.sizeDelta.y
+		local pos=self.contentTransform:TransformPoint(CS.UnityEngine.Vector3(contentRight,0,0)).x
+		glb.log("changed pos:"..pos)
+		glb.log("left:"..left)
+		glb.log("right:"..right)
+		if sizeX<=self.viewPort.sizeDelta.x then
+		else
+			if pos<right then
+				glb.log("change contentTransform position")
+				self.contentTransform.anchoredPosition=CS.UnityEngine.Vector2(self.contentTransform.anchoredPosition.x-(pos-right),0)
+			end
+		end
+	end
+	
 	return tab
 end
