@@ -30,10 +30,21 @@ function class:OnCreate(data)
 
     self.btn_tes_event=self.ui.btn_tes_event.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_tes_event.onClick:AddListener(self:OnTestEventSystem())
+
+    self.btn_vertiacalmul=self.ui.btn_vertiacalmul.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
+    self.btn_vertiacalmul.onClick:AddListener(self:OnTestVerticalMul())
     
     self.listenerFunction=self:AboutEvent()
     EventManager:AddListener("about",self.listenerFunction)
 
+end
+
+function class:OnTestVerticalMul()
+    local function handler()
+        glb.log("test vertical multiple")
+        UIManager:PushPage("ItemPage")
+    end
+    return handler
 end
 
 
@@ -119,8 +130,12 @@ function class:OnDestroy()
     if self.btn_tes_event~=nil then
         self.btn_tes_event.onClick:RemoveAllListeners()
     end
-    EventManager:RemoveListener("about",self.listenerFunction)
 
+    if self.btn_vertiacalmul~=nil then
+        self.btn_vertiacalmul.onClick:RemoveAllListeners()
+    end
+
+    EventManager:RemoveListener("about",self.listenerFunction)
     UIManager:UnRegisterUIMsg("AboutPage",UIManager.MsgType.PushPage,self)
     UIManager:UnRegisterUIMsg("AboutPage",UIManager.MsgType.PopPage,self)
     UIManager:UnRegisterUIMsg("ActivityPage",UIManager.MsgType.PushPage,self)

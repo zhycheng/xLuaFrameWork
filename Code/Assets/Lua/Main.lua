@@ -8,6 +8,7 @@ require "UI.LoginPage"
 require "UI.AboutPage"
 require "UI.BagPage"
 require "UI.HeroPage"
+require "UI.ItemPage"
 require "UI.ActivityPage"
 
 
