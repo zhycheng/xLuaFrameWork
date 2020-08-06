@@ -73,6 +73,10 @@ function class:OnActivityClicked()
     local function handler()
         --local c={9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}
         --self.tabView:Refresh(c)
+        local a={}
+        a.ss=3
+        a.name="zhangyicheng"
+        glb.log(a.name)
         glb.log("活动")
     end
     return handler
