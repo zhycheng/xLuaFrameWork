@@ -33,10 +33,23 @@ function class:OnCreate(data)
 
     self.btn_vertiacalmul=self.ui.btn_vertiacalmul.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_vertiacalmul.onClick:AddListener(self:OnTestVerticalMul())
+
+    self.btn_test_coroutine=self.ui.btn_test_coroutine.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
+    self.btn_test_coroutine.onClick:AddListener(self:OnTestCoroutine())
+
     
     self.listenerFunction=self:AboutEvent()
     EventManager:AddListener("about",self.listenerFunction)
 
+end
+
+
+function class:OnTestCoroutine()
+    local function handler()
+        glb.log("test OnTestCoroutine")
+        UIManager:PushPage("CoroutinePage")
+    end
+    return handler
 end
 
 function class:OnTestVerticalMul()
@@ -133,6 +146,10 @@ function class:OnDestroy()
 
     if self.btn_vertiacalmul~=nil then
         self.btn_vertiacalmul.onClick:RemoveAllListeners()
+    end
+
+    if self.btn_test_coroutine~=nil then
+        self.btn_test_coroutine.onClick:RemoveAllListeners()
     end
 
     EventManager:RemoveListener("about",self.listenerFunction)

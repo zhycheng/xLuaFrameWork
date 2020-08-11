@@ -10,6 +10,7 @@ require "UI.BagPage"
 require "UI.HeroPage"
 require "UI.ItemPage"
 require "UI.ActivityPage"
+require "UI.CoroutinePage"
 
 
 function Update()

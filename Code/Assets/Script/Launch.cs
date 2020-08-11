@@ -22,7 +22,6 @@ public class Launch : MonoBehaviour {
         luaUpdate =luaenv.Global.Get<Action>("Update");
         luaFixedUpdate=luaenv.Global.Get<Action>("FixedUpdate");
         luaLateUpdate= luaenv.Global.Get<Action>("LateUpdate");
-
     }
 
     private void FixedUpdate()

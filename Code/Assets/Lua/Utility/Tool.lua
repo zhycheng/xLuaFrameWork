@@ -1,3 +1,6 @@
+glb.xLuaUtil= require 'xlua.util'
+
+
 -- dump表
 function glb.dump(tb, dump_metatable, max_level)
 	local lookup_table = {}
