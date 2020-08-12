@@ -1,0 +1,75 @@
+UIPage.StandardPage={}
+local class=UIPage.StandardPage
+class.__index=class
+class.pageName="StandardPage"
+UIManager:RegisterPage(class)
+
+
+function class:GetPrefab()
+    return "Prefab/StandardPage"
+end
+
+function class:OnCreate(data)
+    self.btn_ok=self.ui.btn_ok.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
+    self.btn_ok.onClick:AddListener(self:OnOKClicked())
+    self.btn_close=self.ui.btn_close.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
+    self.btn_close.onClick:AddListener(self:OnCloseClicked())
+    
+    UIManager:RegisterUIMsg("ActivityPage",UIManager.MsgType.PushPage,self)
+    UIManager:RegisterUIMsg("ActivityPage",UIManager.MsgType.PopPage,self)
+    
+end
+
+function class:OnOKClicked()
+    local function handler()
+        self:ShowTest()
+        
+    end
+    return handler
+end
+
+
+function class:ShowTest()
+    UIManager:PushPage("ActivityPage")
+end
+
+
+function class:OnCloseClicked()
+    local function handler()
+       UIManager:PopPage()
+    end
+    return handler
+end
+
+function class:OnUpdate()
+   glb.log("OnUpdate")
+end
+
+function class:OnLateUpdate()
+    glb.log("OnLateUpdate")
+end
+
+function class:OnFixedUpdate()
+    glb.log("OnFixedUpdate")
+end
+
+function class:OnUIMsg(msgType,name)
+    glb.log("AboutPage receive msg:type "..msgType.." "..name)
+end
+
+function class:OnDestroy()
+    if self.btn_close~=nil then
+        self.btn_close.onClick:RemoveAllListeners()
+    end
+    if self.btn_ok~=nil then
+        self.btn_ok.onClick:RemoveAllListeners()
+    end
+
+    UIManager:UnRegisterUIMsg("ActivityPage",UIManager.MsgType.PushPage,self)
+    UIManager:UnRegisterUIMsg("ActivityPage",UIManager.MsgType.PopPage,self)
+end
+
+
+
+
+

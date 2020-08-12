@@ -11,6 +11,7 @@ require "UI.HeroPage"
 require "UI.ItemPage"
 require "UI.ActivityPage"
 require "UI.CoroutinePage"
+require "UI.StandardPage"
 
 
 function Update()

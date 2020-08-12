@@ -37,10 +37,21 @@ function class:OnCreate(data)
     self.btn_test_coroutine=self.ui.btn_test_coroutine.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_test_coroutine.onClick:AddListener(self:OnTestCoroutine())
 
+    self.btn_test_standard=self.ui.btn_test_standard.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
+    self.btn_test_standard.onClick:AddListener(self:OnTestStandardPage())
+
     
     self.listenerFunction=self:AboutEvent()
     EventManager:AddListener("about",self.listenerFunction)
 
+end
+
+function class:OnTestStandardPage()
+    local function handler()
+        glb.log("test OnTestStandardPage")
+        UIManager:PushPage("StandardPage")
+    end
+    return handler
 end
 
 
@@ -150,6 +161,10 @@ function class:OnDestroy()
 
     if self.btn_test_coroutine~=nil then
         self.btn_test_coroutine.onClick:RemoveAllListeners()
+    end
+
+    if self.btn_test_standard~=nil then
+        self.btn_test_standard.onClick:RemoveAllListeners()
     end
 
     EventManager:RemoveListener("about",self.listenerFunction)

@@ -2,7 +2,6 @@ EventManager={}
 local class=EventManager
 
 function class:AddListener(eventName,handler)
-	print(handler)
 	if not eventName or type(eventName)~="string" then
 		glb.error("eventName error,type(eventName):"..type(eventName).." not right")
 		return
@@ -30,7 +29,6 @@ function class:Brocast(eventName,...)
 end
 
 function class:RemoveListener(eventName,handler)
-	print(handler)
 	if self.container==nil or self.container[eventName]==nil then
 		glb.error("can't remove ,because not registered")
 		return
