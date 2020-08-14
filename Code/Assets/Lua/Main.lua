@@ -12,10 +12,15 @@ require "UI.ItemPage"
 require "UI.ActivityPage"
 require "UI.CoroutinePage"
 require "UI.StandardPage"
+require "Utility.TimerManager"
+require "UI.TimerPage"
 
+
+TimerManager:Init()
 
 function Update()
     UIManager:Update()
+    TimerManager:Update()
 end
 
 function LateUpdate()

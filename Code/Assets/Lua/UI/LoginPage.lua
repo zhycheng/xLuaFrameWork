@@ -40,11 +40,23 @@ function class:OnCreate(data)
     self.btn_test_standard=self.ui.btn_test_standard.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
     self.btn_test_standard.onClick:AddListener(self:OnTestStandardPage())
 
-    
+    self.btn_test_timer=self.ui.btn_test_timer.transform:GetComponent(typeof(CS.UnityEngine.UI.Button))
+    self.btn_test_timer.onClick:AddListener(self:OnTestTimerPage())
+
     self.listenerFunction=self:AboutEvent()
     EventManager:AddListener("about",self.listenerFunction)
 
 end
+
+function class:OnTestTimerPage()
+    local function handler()
+        glb.log("test OnTestTimerPage")
+        UIManager:PushPage("TimerPage")
+    end
+    return handler
+end
+
+
 
 function class:OnTestStandardPage()
     local function handler()
@@ -165,6 +177,10 @@ function class:OnDestroy()
 
     if self.btn_test_standard~=nil then
         self.btn_test_standard.onClick:RemoveAllListeners()
+    end
+
+    if self.btn_test_timer~=nil then
+        self.btn_test_timer.onClick:RemoveAllListeners()
     end
 
     EventManager:RemoveListener("about",self.listenerFunction)
