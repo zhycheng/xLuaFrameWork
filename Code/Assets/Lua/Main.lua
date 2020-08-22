@@ -14,7 +14,7 @@ require "UI.CoroutinePage"
 require "UI.StandardPage"
 require "Utility.TimerManager"
 require "UI.TimerPage"
-
+require "UI.NetworkPage"
 
 TimerManager:Init()
 
