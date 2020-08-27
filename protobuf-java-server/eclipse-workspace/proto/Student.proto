@@ -1,0 +1,14 @@
+syntax = "proto3";
+package proto;
+message Student {
+  string name = 1;
+  int32 age = 2;
+  int32 height = 3;
+  enum Area{
+	urban=0;
+	rural=1;
+  }
+  Area locate=4;
+  string job=5;
+  repeated string hobby=6;
+}
